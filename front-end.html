@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1e3a5f">
+    <title>MedQuiz – Piattaforma Quiz Medicina</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWVkUXVpeiIsInNob3J0X25hbWUiOiJNZWRRdWl6Iiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmYiLCJ0aGVtZV9jb2xvciI6IiMxZTNhNWYiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMjggMTI4JyUzRSUzQ3JlY3Qgd2lkdGg9JzEyOCcgaGVpZ2h0PScxMjgnIHJ4PScxNicgZmlsbD0nJTIzMWUzYTVmJy8lM0UlM0N0ZXh0IHg9JzY0JyB5PSc4NCcgZm9udC1zaXplPSc2MCcgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nJTIzZmZmJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZiclM0VNJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIsInNpemVzIjoiMTI4eDEyOCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <link href="https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.1.0/400.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.1.0/700.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/idb@8.0.0/build/umd.js"></script>
+    <style>
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a2e;
+            --text-secondary: #495057;
+            --text-muted: #6c757d;
+            --primary: #1e3a5f;
+            --primary-hover: #152845;
+            --secondary: #2c5282;
+            --success: #2f855a;
+            --success-bg: #f0fff4;
+            --warning: #c05621;
+            --warning-bg: #fffaf0;
+            --danger: #c53030;
+            --danger-bg: #fff5f5;
+            --info: #2b6cb0;
+            --border: #cbd5e0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --spacing-xl: 48px;
+            --font-family: 'Atkinson Hyperlegible', sans-serif;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 20px;
+            --font-size-xl: 28px;
+            --line-height: 1.6;
+        }
+        
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: var(--line-height);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            padding: var(--spacing-md);
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .logo {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span {
+            color: #90cdf4;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: var(--spacing-xs);
+            background: var(--bg-secondary);
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
+        }
+        
+        .nav-tab:hover {
+            background: var(--bg-tertiary);
+            color: var(--primary);
+        }
+        
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        
+        .card-title {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--bg-tertiary);
+            padding-bottom: var(--spacing-xs);
+        }
+        
+        .btn {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            min-height: 44px;
+            justify-content: center;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .option-item {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-secondary);
+            position: relative;
+        }
+        
+        .option-item:hover:not(.selected):not(.disabled) {
+            border-color: var(--secondary);
+            background: var(--bg-tertiary);
+        }
+        
+        .option-item.selected {
+            border-color: var(--primary);
+            background: #ebf8ff;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .option-item.correct {
+            border-color: var(--success);
+            background: var(--success-bg);
+        }
+        
+        .option-item.incorrect {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+        }
+        
+        .option-item.disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .option-label {
+            font-weight: 700;
+            margin-right: var(--spacing-sm);
+            color: var(--primary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .feedback-panel {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-md);
+            border-left: 4px solid;
+        }
+        
+        .feedback-correct {
+            background: var(--success-bg);
+            border-color: var(--success);
+        }
+        
+        .feedback-incorrect {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+        }
+        
+        .feedback-title {
+            font-weight: 700;
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .rationale-toggle {
+            color: var(--secondary);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: var(--spacing-sm);
+            display: inline-block;
+        }
+        
+        .timer-display {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            margin: var(--spacing-md) 0;
+            color: var(--primary);
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        
+        .session-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+        
+        .form-label {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+        }
+        
+        .form-select, .form-input {
+            padding: var(--spacing-xs);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            background: var(--bg-secondary);
+        }
+        
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .chip {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 20px;
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--border);
+            background: var(--bg-secondary);
+        }
+        
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 2px solid var(--border);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .subject-progress {
+            margin: var(--spacing-md) 0;
+        }
+        
+        .subject-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .subject-name {
+            font-weight: 700;
+        }
+        
+        .subject-stats {
+            display: flex;
+            gap: var(--spacing-md);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        .export-btns {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .sr-item {
+            padding: var(--spacing-md);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-sm) 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .sr-due {
+            border-color: var(--warning);
+            background: var(--warning-bg);
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        
+        .badge-warning {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+        
+        .badge-info {
+            background: #ebf8ff;
+            color: var(--info);
+        }
+        
+        .sr-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .sr-btn {
+            padding: var(--spacing-xs);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+        }
+        
+        .sr-btn-easy {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        
+        .sr-btn-medium {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+        
+        .sr-btn-hard {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--primary);
+        }
+        
+        .alert {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-md) 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-info {
+            background: #ebf8ff;
+            border-color: var(--info);
+        }
+        
+        .alert-success {
+            background: var(--success-bg);
+            border-color: var(--success);
+        }
+        
+        .alert-danger {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .stem-content {
+            font-size: var(--font-size-lg);
+            line-height: 1.7;
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+        }
+        
+        .stem-clinical {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .session-summary {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+        }
+        
+        .score-display {
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .sr-due-badge {
+            background: var(--danger);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: var(--font-size-sm);
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tab {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .timer-display {
+                font-size: 36px;
+            }
+            
+            .score-display {
+                font-size: 56px;
+            }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-primary);
+        }
+        
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--secondary);
+            background: #ebf8ff;
+        }
+        
+        .upload-zone-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .upload-zone-text {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .upload-zone-subtext {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+        
+        .dataset-list {
+            margin-top: var(--spacing-md);
+        }
+        
+        .dataset-item {
+            padding: var(--spacing-sm);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-xs);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+        }
+        
+        .dataset-info {
+            flex: 1;
+        }
+        
+        .dataset-name {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .dataset-meta {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+        
+        .dataset-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
+        .btn-small {
+            padding: 4px 12px;
+            font-size: var(--font-size-sm);
+            min-height: auto;
+        }
+        
+        .file-input-hidden {
+            display: none;
+        }
+        
+        .validation-result {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+        }
+        
+        .validation-valid {
+            background: var(--success-bg);
+            border: 1px solid var(--success);
+        }
+        
+        .validation-invalid {
+            background: var(--danger-bg);
+            border: 1px solid var(--danger);
+        }
+        
+        .validation-list {
+            list-style: none;
+            margin-top: var(--spacing-sm);
+            padding: 0;
+        }
+        
+        .validation-list li {
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px solid var(--border);
+            font-size: var(--font-size-sm);
+        }
+        
+        .validation-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .focus-indicator:focus-visible {
+            outline: 3px solid var(--secondary);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">Med<span>Quiz</span></div>
+            <div id="srDueBadge" class="sr-due-badge hidden">0 item da ripassare</div>
+        </header>
+        
+        <nav class="nav-tabs" role="tablist">
+            <button class="nav-tab active" data-view="upload" role="tab">📁 Carica Quiz</button>
+            <button class="nav-tab" data-view="dashboard" role="tab">📊 Dashboard</button>
+            <button class="nav-tab" data-view="quiz" role="tab">📝 Sessione</button>
+            <button class="nav-tab" data-view="review" role="tab">🔄 Ripasso SR</button>
+            <button class="nav-tab" data-view="progress" role="tab">📈 Progressi</button>
+        </nav>
+        
+        <main>
+            <div id="view-upload" class="view active">
+                <div class="card">
+                    <h2 class="card-title">Carica File JSON dei Quiz</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+                        Trascina qui i tuoi file JSON oppure clicca per selezionarli. Il sistema validerà automaticamente la struttura dei dati.
+                    </p>
+                    
+                    <div id="uploadZone" class="upload-zone" tabindex="0">
+                        <div class="upload-zone-icon">📥</div>
+                        <div class="upload-zone-text"><strong>Clicca o trascina qui i file JSON</strong></div>
+                        <div class="upload-zone-subtext">Formato supportato: .json (array di oggetti o oggetto con array)</div>
+                    </div>
+                    <input type="file" id="fileInput" class="file-input-hidden" accept=".json" multiple>
+                    
+                    <div id="uploadProgress" class="hidden" style="margin-top: var(--spacing-md);">
+                        <div class="progress-bar">
+                            <div id="progressFillUpload" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <p class="progress-text" id="uploadStatus">Validazione in corso...</p>
+                    </div>
+                    
+                    <div id="validationResult" class="hidden"></div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">Dataset Caricati</h2>
+                    <div id="datasetList" class="dataset-list">
+                        <p style="color: var(--text-muted); text-align: center; padding: var(--spacing-lg);">
+                            Nessun dataset caricato. Carica il tuo primo file JSON per iniziare.
+                        </p>
+                    </div>
+                    <div style="margin-top: var(--spacing-md); display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                        <button id="loadSampleBtn" class="btn btn-secondary btn-small">Carica Dati di Esempio</button>
+                        <button id="clearAllDataBtn" class="btn btn-danger btn-small">⚠️ Cancella Tutti i Quiz</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="view-dashboard" class="view">
+                <div class="card">
+                    <h2 class="card-title">Configura Sessione di Studio</h2>
+                    <div class="session-config">
+                        <div class="form-group">
+                            <label class="form-label">Disciplina</label>
+                            <select id="disciplineFilter" class="form-select">
+                                <option value="all">Tutte</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tipo di Item</label>
+                            <select id="typeFilter" class="form-select">
+                                <option value="all">Tutti</option>
+                                <option value="mcq">MCQ</option>
+                                <option value="clinical">Vignetta Clinica</option>
+                                <option value="tf">Vero/Falso</option>
+                                <option value="matching">Matching</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Difficoltà Max</label>
+                            <select id="diffFilter" class="form-select">
+                                <option value="5">Tutte (1-5)</option>
+                                <option value="3">Facile-Medio (1-3)</option>
+                                <option value="4">Difficile (4-5)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Numero di Item</label>
+                            <input type="number" id="itemCount" class="form-input" value="15" min="5" max="20">
+                        </div>
+                    </div>
+                    <div class="alert alert-info" id="quizCountAlert">
+                        📚 <strong id="availableQuizCount">0</strong> item disponibili per la sessione.
+                    </div>
+                    <button id="startSessionBtn" class="btn btn-primary btn-block" disabled>🚀 Inizia Sessione</button>
+                </div>
+                
+                <div class="stats-grid" id="quickStats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalQuizLoaded">0</div>
+                        <div class="stat-label">Quiz Caricati</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalAttempted">0</div>
+                        <div class="stat-label">Item Tentati</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="accuracy">0%</div>
+                        <div class="stat-label">Accuratezza</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="srDueCount">0</div>
+                        <div class="stat-label">Da Ripassare</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="view-quiz" class="view">
+                <div class="card">
+                    <div class="progress-text">
+                        Item <span id="currentItemNum">1</span> di <span id="totalItemNum">15</span> | 
+                        Disciplina: <span id="currentDiscipline">-</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    
+                    <div id="stemContainer" class="stem-content"></div>
+                    
+                    <div id="optionsContainer" class="option-group"></div>
+                    
+                    <div id="feedbackContainer" class="hidden">
+                        <div id="feedbackPanel" class="feedback-panel"></div>
+                        <div style="margin-top: var(--spacing-md); display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                            <button id="nextBtn" class="btn btn-primary" disabled>Avanti →</button>
+                            <button id="saveSessionBtn" class="btn btn-secondary">💾 Salva Sessione</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" id="pomodoroCard">
+                    <h3 class="card-title">⏱️ Timer Pomodoro</h3>
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    <div class="progress-text" id="timerStatus">Studio - 25 min</div>
+                    <div class="timer-controls">
+                        <button id="startTimerBtn" class="btn btn-primary">Start</button>
+                        <button id="pauseTimerBtn" class="btn btn-secondary" disabled>Pausa</button>
+                        <button id="resetTimerBtn" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="view-review" class="view">
+                <div class="card">
+                    <h2 class="card-title">🔄 Spaced Repetition</h2>
+                    <p style="margin-bottom: var(--spacing-md); color: var(--text-secondary);">
+                        Item programmati per il ripasso basati sull'algoritmo SM-2. 
+                        Rispondi correttamente per aumentare l'intervallo, o "Difficile" per ripetere prima.
+                    </p>
+                    <div id="srDueList"></div>
+                    <div id="srEmpty" class="hidden">
+                        <p style="text-align: center; padding: var(--spacing-xl); color: var(--text-muted);">
+                            Nessun item da ripassare al momento. Ottimo lavoro!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="view-progress" class="view">
+                <div class="card">
+                    <h2 class="card-title">📊 Progressi per Disciplina</h2>
+                    <div class="filter-chips">
+                        <button class="chip active" data-filter="all">Tutte</button>
+                        <button class="chip" data-filter="done">Completati</button>
+                        <button class="chip" data-filter="review">Da Ripassare</button>
+                    </div>
+                    <div id="subjectProgress"></div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">📈 Trend Temporale (Ultime 10 sessioni)</h2>
+                    <canvas id="trendChart" width="800" height="300" style="width: 100%; height: 300px; background: var(--bg-secondary); border-radius: var(--radius-md);"></canvas>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">💾 Esporta Progressi</h2>
+                    <div class="export-btns">
+                        <button id="exportCSV" class="btn btn-primary">Esporta CSV</button>
+                        <button id="exportJSON" class="btn btn-secondary">Esporta JSON</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <div id="sessionCompleteModal" class="modal-overlay hidden">
+            <div class="modal">
+                <h3 class="modal-header">🎉 Sessione Completata!</h3>
+                <div class="session-summary">
+                    <div class="score-display" id="finalScore">85</div>
+                    <p>Score Ponderato (0-100)</p>
+                    <div class="stats-grid" style="margin: var(--spacing-lg) 0;">
+                        <div class="stat-card">
+                            <div class="stat-value" id="finalCorrect">12</div>
+                            <div class="stat-label">Corrette</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="finalTotal">15</div>
+                            <div class="stat-label">Totali</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="finalAccuracy">80%</div>
+                            <div class="stat-label">Accuratezza</div>
+                        </div>
+                    </div>
+                    <button id="closeModalBtn" class="btn btn-primary btn-block">Torna alla Dashboard</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="confirmClearModal" class="modal-overlay hidden">
+            <div class="modal">
+                <h3 class="modal-header">⚠️ Attenzione</h3>
+                <p style="margin-bottom: var(--spacing-md); color: var(--text-secondary);">
+                    Sei sicuro di voler cancellare tutti i quiz e i progressi? Questa azione non può essere annullata.
+                </p>
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <button id="confirmClearBtn" class="btn btn-danger btn-block">Sì, Cancella Tutto</button>
+                    <button id="cancelClearBtn" class="btn btn-secondary btn-block">Annulla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { openDB } = idb;
+        
+        const DB_NAME = 'MedQuizDB';
+        const DB_VERSION = 2;
+        
+        let db;
+        let currentSession = [];
+        let currentQuestionIndex = 0;
+        let answered = false;
+        let sessionAttempts = [];
+        let loadedDatasets = [];
+        
+        async function initDB() {
+            db = await openDB(DB_NAME, DB_VERSION, {
+                upgrade(upgradeDB, oldVersion, newVersion) {
+                    if (oldVersion < 1) {
+                        if (!upgradeDB.objectStoreNames.contains('quiz_data')) {
+                            const quizStore = upgradeDB.createObjectStore('quiz_data', { keyPath: 'item_id' });
+                            quizStore.createIndex('disciplina', 'disciplina', { unique: false });
+                            quizStore.createIndex('dataset', 'dataset', { unique: false });
+                        }
+                        if (!upgradeDB.objectStoreNames.contains('user_attempts')) {
+                            const attemptsStore = upgradeDB.createObjectStore('user_attempts', { keyPath: 'id', autoIncrement: true });
+                            attemptsStore.createIndex('item_id', 'item_id', { unique: false });
+                            attemptsStore.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                        if (!upgradeDB.objectStoreNames.contains('item_stats')) {
+                            const statsStore = upgradeDB.createObjectStore('item_stats', { keyPath: 'item_id' });
+                            statsStore.createIndex('disciplina', 'disciplina', { unique: false });
+                            statsStore.createIndex('next_review', 'next_review', { unique: false });
+                        }
+                        if (!upgradeDB.objectStoreNames.contains('session_logs')) {
+                            const logsStore = upgradeDB.createObjectStore('session_logs', { keyPath: 'session_id' });
+                            logsStore.createIndex('completed_at', 'completed_at', { unique: false });
+                        }
+                    }
+                    if (oldVersion < 2) {
+                        if (!upgradeDB.objectStoreNames.contains('datasets')) {
+                            upgradeDB.createObjectStore('datasets', { keyPath: 'name' });
+                        }
+                        if (upgradeDB.objectStoreNames.contains('quiz_data')) {
+                            const tx = upgradeDB.transaction('quiz_data', 'readwrite');
+                            const store = tx.store;
+                            store.createIndex('dataset', 'dataset', { unique: false });
+                        }
+                    }
+                }
+            });
+        }
+        
+        function validateQuizSchema(data) {
+            const errors = [];
+            const requiredFields = ['item_id', 'disciplina', 'stem', 'options', 'correct_answer'];
+            
+            let quizArray = [];
+            
+            if (Array.isArray(data)) {
+                quizArray = data;
+            } else if (typeof data === 'object' && data !== null) {
+                if (Array.isArray(data.quiz)) {
+                    quizArray = data.quiz;
+                } else if (Array.isArray(data.items)) {
+                    quizArray = data.items;
+                } else if (Array.isArray(data.questions)) {
+                    quizArray = data.questions;
+                } else if (Array.isArray(data.data)) {
+                    quizArray = data.data;
+                } else {
+                    for (const [key, value] of Object.entries(data)) {
+                        if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
+                            quizArray = value;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (quizArray.length === 0) {
+                errors.push('Nessun array di quiz trovato. Il file deve contenere un array o un oggetto con chiave "quiz", "items", "questions" o "data".');
+                return { valid: false, errors, quizzes: [] };
+            }
+            
+            const validQuizzes = [];
+            const seenIds = new Set();
+            
+            quizArray.forEach((item, index) => {
+                const itemErrors = [];
+                
+                for (const field of requiredFields) {
+                    if (!item.hasOwnProperty(field)) {
+                        itemErrors.push(`Campo mancante: ${field}`);
+                    }
+                }
+                
+                if (item.item_id) {
+                    if (seenIds.has(item.item_id)) {
+                        itemErrors.push(`ID duplicato: ${item.item_id}`);
+                    } else {
+                        seenIds.add(item.item_id);
+                    }
+                }
+                
+                if (item.options && !Array.isArray(item.options)) {
+                    itemErrors.push('Il campo "options" deve essere un array');
+                }
+                
+                if (item.options && item.correct_answer) {
+                    const labels = item.options.map(o => o.label);
+                    if (!labels.includes(item.correct_answer)) {
+                        itemErrors.push(`La risposta corretta "${item.correct_answer}" non è presente nelle opzioni`);
+                    }
+                }
+                
+                if (itemErrors.length > 0) {
+                    errors.push(`Item #${index + 1} (${item.item_id || 'sconosciuto'}): ${itemErrors.join(', ')}`);
+                } else {
+                    validQuizzes.push({
+                        item_id: item.item_id,
+                        disciplina: item.disciplina || 'Generale',
+                        blooms_level: item.blooms_level || 2,
+                        item_type: item.item_type || 'mcq',
+                        stem: item.stem,
+                        options: item.options,
+                        correct_answer: item.correct_answer,
+                        distractor_rationale: item.distractor_rationale || {},
+                        rationale_breve: item.rationale_breve || '',
+                        rationale_esteso: item.rationale_esteso || '',
+                        difficulty_est: item.difficulty_est || 3,
+                        competency_afm: item.competency_afm || '',
+                        source_ref: item.source_ref || '',
+                        tags: item.tags || []
+                    });
+                }
+            });
+            
+            return { valid: validQuizzes.length > 0, errors, quizzes: validQuizzes, total: quizArray.length };
+        }
+        
+        async function loadQuizData(filters = {}) {
+            let data = await db.getAll('quiz_data');
+            
+            if (filters.discipline && filters.discipline !== 'all') {
+                data = data.filter(d => d.disciplina === filters.discipline);
+            }
+            if (filters.type && filters.type !== 'all') {
+                data = data.filter(d => d.item_type === filters.type);
+            }
+            if (filters.maxDiff && filters.maxDiff < 5) {
+                data = data.filter(d => d.difficulty_est <= filters.maxDiff);
+            }
+            return data;
+        }
+        
+        async function saveAttempt(attempt) {
+            await db.add('user_attempts', attempt);
+        }
+        
+        async function updateItemStats(itemId, correct) {
+            let stats = await db.get('item_stats', itemId);
+            const now = new Date().toISOString();
+            
+            if (!stats) {
+                stats = {
+                    item_id: itemId,
+                    attempts: 0,
+                    correct: 0,
+                    last_review: now,
+                    next_review: now,
+                    ease_factor: 2.5,
+                    interval_days: 0
+                };
+            }
+            
+            stats.attempts += 1;
+            if (correct) stats.correct += 1;
+            stats.last_review = now;
+            
+            const accuracy = stats.correct / stats.attempts;
+            
+            if (accuracy >= 0.8) {
+                stats.ease_factor = Math.min(3.0, stats.ease_factor + 0.1);
+                stats.interval_days = Math.max(1, Math.floor(stats.interval_days * stats.ease_factor));
+            } else if (accuracy >= 0.5) {
+                stats.interval_days = Math.max(1, Math.floor(stats.interval_days * 1.5));
+            } else {
+                stats.ease_factor = Math.max(1.3, stats.ease_factor - 0.2);
+                stats.interval_days = 1;
+            }
+            
+            const nextReview = new Date();
+            nextReview.setDate(nextReview.getDate() + stats.interval_days);
+            stats.next_review = nextReview.toISOString();
+            
+            await db.put('item_stats', stats);
+            return stats;
+        }
+        
+        async function getDueItems() {
+            const now = new Date().toISOString();
+            const allStats = await db.getAll('item_stats');
+            return allStats.filter(s => s.next_review <= now);
+        }
+        
+        function calculateWeightedScore(attempts, quizDataMap) {
+            if (attempts.length === 0) return 0;
+            
+            let totalWeight = 0;
+            let weightedCorrect = 0;
+            
+            for (const attempt of attempts) {
+                const item = quizDataMap[attempt.item_id];
+                if (!item) continue;
+                
+                const bloomWeight = item.blooms_level / 6;
+                const diffWeight = item.difficulty_est / 5;
+                const weight = (bloomWeight + diffWeight) / 2;
+                
+                totalWeight += weight;
+                if (attempt.correct) {
+                    weightedCorrect += weight;
+                }
+            }
+            
+            return totalWeight > 0 ? Math.round((weightedCorrect / totalWeight) * 100) : 0;
+        }
+        
+        function calculateAccuracy(attempts) {
+            if (attempts.length === 0) return 0;
+            const correct = attempts.filter(a => a.correct).length;
+            return Math.round((correct / attempts.length) * 100);
+        }
+        
+        async function updateDashboardStats() {
+            const attempts = await db.getAll('user_attempts');
+            const dueItems = await getDueItems();
+            const allQuizzes = await db.getAll('quiz_data');
+            
+            document.getElementById('totalQuizLoaded').textContent = allQuizzes.length;
+            document.getElementById('totalAttempted').textContent = attempts.length;
+            document.getElementById('accuracy').textContent = calculateAccuracy(attempts) + '%';
+            
+            const quizDataMap = {};
+            allQuizzes.forEach(d => quizDataMap[d.item_id] = d);
+            document.getElementById('availableQuizCount').textContent = allQuizzes.length;
+            
+            const startBtn = document.getElementById('startSessionBtn');
+            startBtn.disabled = allQuizzes.length === 0;
+            
+            document.getElementById('srDueCount').textContent = dueItems.length;
+            
+            const badge = document.getElementById('srDueBadge');
+            if (dueItems.length > 0) {
+                badge.textContent = `${dueItems.length} item da ripassare`;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+        
+        async function populateDisciplineFilter() {
+            const allData = await db.getAll('quiz_data');
+            const disciplines = [...new Set(allData.map(d => d.disciplina))].sort();
+            const select = document.getElementById('disciplineFilter');
+            select.innerHTML = '<option value="all">Tutte</option>';
+            disciplines.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                select.appendChild(opt);
+            });
+        }
+        
+        function startSession() {
+            const discipline = document.getElementById('disciplineFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const maxDiff = parseInt(document.getElementById('diffFilter').value);
+            const count = parseInt(document.getElementById('itemCount').value) || 15;
+            
+            const filters = {
+                discipline,
+                type,
+                maxDiff
+            };
+            
+            loadQuizData(filters).then(data => {
+                if (data.length === 0) {
+                    alert('Nessun item disponibile con i filtri selezionati.');
+                    return;
+                }
+                
+                const shuffled = [...data].sort(() => Math.random() - 0.5);
+                currentSession = shuffled.slice(0, Math.min(count, shuffled.length));
+                currentQuestionIndex = 0;
+                sessionAttempts = [];
+                answered = false;
+                
+                document.getElementById('totalItemNum').textContent = currentSession.length;
+                switchView('quiz');
+                renderQuestion();
+            });
+        }
+        
+        function renderQuestion() {
+            const item = currentSession[currentQuestionIndex];
+            if (!item) return;
+            
+            answered = false;
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('feedbackContainer').classList.add('hidden');
+            document.getElementById('currentItemNum').textContent = currentQuestionIndex + 1;
+            document.getElementById('currentDiscipline').textContent = item.disciplina;
+            document.getElementById('progressFill').style.width = ((currentQuestionIndex / currentSession.length) * 100) + '%';
+            
+            const stemContainer = document.getElementById('stemContainer');
+            stemContainer.className = 'stem-content' + (item.item_type === 'clinical' ? ' stem-clinical' : '');
+            
+            let stemHTML = `<p><strong>[${item.disciplina}] ${item.item_type.toUpperCase()} - Bloom: ${item.blooms_level}/6 - Difficoltà: ${item.difficulty_est}/5</strong></p>`;
+            stemHTML += `<p style="margin-top: 8px;">${item.stem}</p>`;
+            if (item.competency_afm) {
+                stemHTML += `<p style="margin-top: 8px; font-size: 14px; color: var(--text-muted);">Competenza: ${item.competency_afm}</p>`;
+            }
+            stemContainer.innerHTML = stemHTML;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            item.options.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'option-item';
+                div.innerHTML = `<span class="option-label">${opt.label}.</span> ${opt.text}`;
+                div.dataset.label = opt.label;
+                div.addEventListener('click', () => selectOption(opt.label));
+                optionsContainer.appendChild(div);
+            });
+        }
+        
+        function selectOption(label) {
+            if (answered) return;
+            answered = true;
+            
+            const item = currentSession[currentQuestionIndex];
+            const isCorrect = label === item.correct_answer;
+            
+            document.querySelectorAll('.option-item').forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.dataset.label === item.correct_answer) {
+                    opt.classList.add('correct');
+                } else if (opt.dataset.label === label && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            const attempt = {
+                item_id: item.item_id,
+                disciplina: item.disciplina,
+                user_answer: label,
+                correct_answer: item.correct_answer,
+                correct: isCorrect,
+                timestamp: new Date().toISOString(),
+                session_id: Date.now().toString()
+            };
+            sessionAttempts.push(attempt);
+            saveAttempt(attempt);
+            updateItemStats(item.item_id, isCorrect);
+            
+            showFeedback(item, isCorrect);
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        function showFeedback(item, isCorrect) {
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            
+            feedbackContainer.classList.remove('hidden');
+            
+            const panelClass = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
+            feedbackPanel.className = `feedback-panel ${panelClass}`;
+            
+            const userAnswer = sessionAttempts[sessionAttempts.length - 1].user_answer;
+            
+            let html = `<div class="feedback-title">${isCorrect ? '✓ Corretto!' : '✗ Errato'}</div>`;
+            html += `<p><strong>Risposta corretta: ${item.correct_answer}</strong></p>`;
+            if (!isCorrect) {
+                html += `<p>Hai selezionato: ${userAnswer}</p>`;
+            }
+            if (item.rationale_breve) {
+                html += `<div id="rationaleBreve"><p style="margin-top: 8px;">${item.rationale_breve}</p></div>`;
+            }
+            if (item.rationale_esteso) {
+                html += `<span class="rationale-toggle" onclick="toggleRationale()">>> Mostra spiegazione estesa</span>`;
+                html += `<div id="rationaleEsteso" class="hidden" style="margin-top: 12px;">${item.rationale_esteso}</div>`;
+            }
+            
+            if (item.distractor_rationale && item.distractor_rationale[userAnswer] && !isCorrect) {
+                html += `<div style="margin-top: 12px; padding: 8px; background: #fff5f5; border-radius: 6px;">`;
+                html += `<strong>Perché la tua risposta è errata:</strong><br>`;
+                html += item.distractor_rationale[userAnswer];
+                html += `</div>`;
+            }
+            
+            feedbackPanel.innerHTML = html;
+        }
+        
+        window.toggleRationale = function() {
+            const el = document.getElementById('rationaleEsteso');
+            if (el) el.classList.toggle('hidden');
+        };
+        
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < currentSession.length) {
+                renderQuestion();
+            } else {
+                endSession();
+            }
+        });
+        
+        async function endSession() {
+            const quizDataMap = {};
+            const allData = await db.getAll('quiz_data');
+            allData.forEach(d => quizDataMap[d.item_id] = d);
+            
+            const score = calculateWeightedScore(sessionAttempts, quizDataMap);
+            const accuracy = calculateAccuracy(sessionAttempts);
+            const correct = sessionAttempts.filter(a => a.correct).length;
+            const total = sessionAttempts.length;
+            
+            const sessionId = Date.now().toString();
+            await db.add('session_logs', {
+                session_id: sessionId,
+                completed_at: new Date().toISOString(),
+                score,
+                accuracy,
+                items: sessionAttempts
+            });
+            
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalCorrect').textContent = correct;
+            document.getElementById('finalTotal').textContent = total;
+            document.getElementById('finalAccuracy').textContent = accuracy + '%';
+            document.getElementById('sessionCompleteModal').classList.remove('hidden');
+            
+            await updateDashboardStats();
+        }
+        
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('sessionCompleteModal').classList.add('hidden');
+            switchView('dashboard');
+        });
+        
+        document.getElementById('startSessionBtn').addEventListener('click', startSession);
+        
+        function switchView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(`view-${viewName}`).classList.add('active');
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+            
+            if (viewName === 'dashboard') {
+                updateDashboardStats();
+                populateDisciplineFilter();
+            }
+            if (viewName === 'progress') renderProgress();
+            if (viewName === 'review') renderSRReview();
+            if (viewName === 'upload') renderDatasetList();
+        }
+        
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => switchView(tab.dataset.view));
+        });
+        
+        let pomodoroInterval;
+        let pomodoroTime = 25 * 60;
+        let pomodoroRunning = false;
+        let pomodoroPhase = 'study';
+        
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+        
+        function updateTimerDisplay() {
+            document.getElementById('timerDisplay').textContent = formatTime(pomodoroTime);
+            document.getElementById('timerStatus').textContent = pomodoroPhase === 'study' ? '📖 Studio - 25 min' : '☕ Pausa - 5 min';
+        }
+        
+        document.getElementById('startTimerBtn').addEventListener('click', () => {
+            if (!pomodoroRunning) {
+                pomodoroRunning = true;
+                document.getElementById('startTimerBtn').disabled = true;
+                document.getElementById('pauseTimerBtn').disabled = false;
+                pomodoroInterval = setInterval(() => {
+                    pomodoroTime--;
+                    updateTimerDisplay();
+                    if (pomodoroTime <= 0) {
+                        clearInterval(pomodoroInterval);
+                        pomodoroRunning = false;
+                        document.getElementById('startTimerBtn').disabled = false;
+                        document.getElementById('pauseTimerBtn').disabled = true;
+                        
+                        if (pomodoroPhase === 'study') {
+                            pomodoroPhase = 'break';
+                            pomodoroTime = 5 * 60;
+                            alert('⏰ Tempo di studio completato! Prenditi 5 minuti di pausa.');
+                        } else {
+                            pomodoroPhase = 'study';
+                            pomodoroTime = 25 * 60;
+                            alert('⏰ Pausa terminata! Torna a studiare.');
+                        }
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+        });
+        
+        document.getElementById('pauseTimerBtn').addEventListener('click', () => {
+            clearInterval(pomodoroInterval);
+            pomodoroRunning = false;
+            document.getElementById('startTimerBtn').disabled = false;
+            document.getElementById('pauseTimerBtn').disabled = true;
+        });
+        
+        document.getElementById('resetTimerBtn').addEventListener('click', () => {
+            clearInterval(pomodoroInterval);
+            pomodoroRunning = false;
+            pomodoroPhase = 'study';
+            pomodoroTime = 25 * 60;
+            updateTimerDisplay();
+            document.getElementById('startTimerBtn').disabled = false;
+            document.getElementById('pauseTimerBtn').disabled = true;
+        });
+        
+        async function renderSRReview() {
+            const dueItems = await getDueItems();
+            const listEl = document.getElementById('srDueList');
+            const emptyEl = document.getElementById('srEmpty');
+            
+            listEl.innerHTML = '';
+            
+            if (dueItems.length === 0) {
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+            
+            for (const stat of dueItems) {
+                const itemData = await db.get('quiz_data', stat.item_id);
+                if (!itemData) continue;
+                
+                const div = document.createElement('div');
+                div.className = 'sr-item sr-due';
+                div.innerHTML = `
+                    <div>
+                        <strong>${itemData.disciplina}</strong> - ${itemData.item_type}<br>
+                        <span style="font-size: 14px; color: var(--text-secondary);">
+                            ${itemData.stem.substring(0, 100)}${itemData.stem.length > 100 ? '...' : ''}
+                        </span>
+                        <div style="margin-top: 4px;">
+                            <span class="badge badge-warning">Intervallo: ${stat.interval_days} giorni</span>
+                            <span class="badge badge-info">EF: ${stat.ease_factor.toFixed(2)}</span>
+                            <span class="badge badge-success">${stat.correct}/${stat.attempts} corrette</span>
+                        </div>
+                    </div>
+                    <div class="sr-actions">
+                        <button class="sr-btn sr-btn-hard" onclick="srReview('${stat.item_id}', 'hard')">Difficile</button>
+                        <button class="sr-btn sr-btn-medium" onclick="srReview('${stat.item_id}', 'medium')">OK</button>
+                        <button class="sr-btn sr-btn-easy" onclick="srReview('${stat.item_id}', 'easy')">Facile</button>
+                    </div>
+                `;
+                listEl.appendChild(div);
+            }
+        }
+        
+        window.srReview = async function(itemId, rating) {
+            let stats = await db.get('item_stats', itemId);
+            if (!stats) return;
+            
+            const now = new Date();
+            
+            switch(rating) {
+                case 'easy':
+                    stats.ease_factor = Math.min(3.0, stats.ease_factor + 0.15);
+                    stats.interval_days = Math.max(1, Math.floor(stats.interval_days * stats.ease_factor * 1.3));
+                    break;
+                case 'medium':
+                    stats.interval_days = Math.max(1, Math.floor(stats.interval_days * stats.ease_factor));
+                    break;
+                case 'hard':
+                    stats.ease_factor = Math.max(1.3, stats.ease_factor - 0.2);
+                    stats.interval_days = 1;
+                    break;
+            }
+            
+            stats.last_review = now.toISOString();
+            const nextReview = new Date(now);
+            nextReview.setDate(nextReview.getDate() + stats.interval_days);
+            stats.next_review = nextReview.toISOString();
+            
+            await db.put('item_stats', stats);
+            renderSRReview();
+            updateDashboardStats();
+        };
+        
+        async function renderProgress() {
+            const attempts = await db.getAll('user_attempts');
+            const filter = document.querySelector('.chip.active').dataset.filter;
+            
+            const subjectData = {};
+            attempts.forEach(a => {
+                if (!subjectData[a.disciplina]) {
+                    subjectData[a.disciplina] = { total: 0, correct: 0, items: new Set() };
+                }
+                subjectData[a.disciplina].total++;
+                if (a.correct) subjectData[a.disciplina].correct++;
+                subjectData[a.disciplina].items.add(a.item_id);
+            });
+            
+            const container = document.getElementById('subjectProgress');
+            container.innerHTML = '';
+            
+            if (Object.keys(subjectData).length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: var(--spacing-lg); color: var(--text-muted);">Nessun dato disponibile. Completa qualche sessione per vedere i progressi.</p>';
+            }
+            
+            Object.entries(subjectData).forEach(([subj, data]) => {
+                if (filter === 'done' && data.items.size < 5) return;
+                if (filter === 'review' && data.correct / data.total >= 0.8) return;
+                
+                const accuracy = Math.round((data.correct / data.total) * 100);
+                const div = document.createElement('div');
+                div.className = 'subject-item';
+                div.innerHTML = `
+                    <div class="subject-name">${subj}</div>
+                    <div class="subject-stats">
+                        <span>${data.items.size} item</span>
+                        <span>${data.total} tentativi</span>
+                        <span style="color: ${accuracy >= 70 ? 'var(--success)' : 'var(--warning)'}; font-weight: 700;">${accuracy}%</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            
+            renderTrendChart();
+        }
+        
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                renderProgress();
+            });
+        });
+        
+        async function renderTrendChart() {
+            const canvas = document.getElementById('trendChart');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 800;
+            canvas.height = 300;
+            
+            const logs = await db.getAll('session_logs');
+            logs.sort((a, b) => new Date(a.completed_at) - new Date(b.completed_at));
+            
+            const recent = logs.slice(-10);
+            if (recent.length === 0) {
+                ctx.fillStyle = '#6c757d';
+                ctx.font = '16px Atkinson Hyperlegible';
+                ctx.textAlign = 'center';
+                ctx.fillText('Completa qualche sessione per vedere il trend', 400, 150);
+                return;
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const padding = 50;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            
+            ctx.strokeStyle = '#cbd5e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = padding + (chartHeight / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#6c757d';
+                ctx.font = '12px Atkinson Hyperlegible';
+                ctx.textAlign = 'right';
+                ctx.fillText((100 - i * 25) + '%', padding - 8, y + 4);
+            }
+            
+            const barWidth = chartWidth / recent.length;
+            const barGap = barWidth * 0.3;
+            
+            recent.forEach((log, i) => {
+                const x = padding + barWidth * i + barGap;
+                const barH = (log.accuracy / 100) * chartHeight;
+                const y = padding + chartHeight - barH;
+                
+                ctx.fillStyle = log.accuracy >= 70 ? '#2f855a' : '#c05621';
+                ctx.fillRect(x, y, barWidth - barGap, barH);
+                
+                ctx.fillStyle = '#1a1a2e';
+                ctx.font = 'bold 12px Atkinson Hyperlegible';
+                ctx.textAlign = 'center';
+                ctx.fillText(log.accuracy + '%', x + (barWidth - barGap) / 2, y - 5);
+            });
+        }
+        
+        async function exportCSV() {
+            const attempts = await db.getAll('user_attempts');
+            let csv = 'Sessione,Item_ID,Disciplina,Risposta_Utente,Risposta_Corretta,Corretto,Timestamp\n';
+            
+            attempts.forEach(a => {
+                csv += `${a.session_id},${a.item_id},${a.disciplina},${a.user_answer},${a.correct_answer},${a.correct},${a.timestamp}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `medquiz_progress_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+        
+        async function exportJSON() {
+            const attempts = await db.getAll('user_attempts');
+            const logs = await db.getAll('session_logs');
+            
+            const data = {
+                exported_at: new Date().toISOString(),
+                attempts,
+                sessions: logs
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `medquiz_progress_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+        }
+        
+        document.getElementById('exportCSV').addEventListener('click', exportCSV);
+        document.getElementById('exportJSON').addEventListener('click', exportJSON);
+        
+        document.getElementById('saveSessionBtn').addEventListener('click', async () => {
+            if (sessionAttempts.length > 0) {
+                const allData = await db.getAll('quiz_data');
+                const quizDataMap = {};
+                allData.forEach(d => quizDataMap[d.item_id] = d);
+                
+                const score = calculateWeightedScore(sessionAttempts, quizDataMap);
+                await db.add('session_logs', {
+                    session_id: Date.now().toString(),
+                    completed_at: new Date().toISOString(),
+                    score,
+                    accuracy: calculateAccuracy(sessionAttempts),
+                    items: sessionAttempts
+                });
+                alert('✅ Sessione salvata con successo!');
+                await updateDashboardStats();
+            }
+        });
+        
+        // UPLOAD HANDLING
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        
+        uploadZone.addEventListener('click', () => fileInput.click());
+        
+        uploadZone.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                fileInput.click();
+            }
+        });
+        
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+            fileInput.value = '';
+        });
+        
+        async function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            const progressEl = document.getElementById('uploadProgress');
+            const statusEl = document.getElementById('uploadStatus');
+            const progressFill = document.getElementById('progressFillUpload');
+            const resultEl = document.getElementById('validationResult');
+            
+            progressEl.classList.remove('hidden');
+            resultEl.classList.add('hidden');
+            
+            let totalQuizzes = 0;
+            let validQuizzes = [];
+            let allErrors = [];
+            let processedFiles = 0;
+            
+            for (const file of files) {
+                statusEl.textContent = `Elaborazione: ${file.name}...`;
+                progressFill.style.width = `${(processedFiles / files.length) * 50}%`;
+                
+                try {
+                    const text = await file.text();
+                    const data = JSON.parse(text);
+                    
+                    const validation = validateQuizSchema(data);
+                    
+                    if (validation.valid) {
+                        validQuizzes = validQuizzes.concat(validation.quizzes);
+                        totalQuizzes += validation.total;
+                    } else {
+                        allErrors = allErrors.concat(validation.errors);
+                    }
+                } catch (err) {
+                    allErrors.push(`${file.name}: File JSON non valido - ${err.message}`);
+                }
+                
+                processedFiles++;
+                progressFill.style.width = `${(processedFiles / files.length) * 50}%`;
+            }
+            
+            if (validQuizzes.length > 0) {
+                statusEl.textContent = `Salvataggio di ${validQuizzes.length} item nel database...`;
+                progressFill.style.width = '75%';
+                
+                const datasetName = files.length === 1 ? files[0].name.replace('.json', '') : `Importazione_${new Date().toISOString().split('T')[0]}`;
+                
+                await saveQuizzesToDB(validQuizzes, datasetName);
+                
+                progressFill.style.width = '100%';
+                statusEl.textContent = `✅ ${validQuizzes.length} item caricati con successo!`;
+                
+                let resultHTML = `<div class="validation-result validation-valid">`;
+                resultHTML += `<strong>✅ Caricamento completato!</strong>`;
+                resultHTML += `<p>${validQuizzes.length} item validi caricati su ${totalQuizzes} totali.</p>`;
+                
+                if (allErrors.length > 0) {
+                    resultHTML += `<details style="margin-top: 8px;"><summary style="cursor: pointer; font-weight: 700;">Vedi ${allErrors.length} errori di validazione</summary><ul class="validation-list">`;
+                    allErrors.forEach(err => {
+                        resultHTML += `<li>❌ ${err}</li>`;
+                    });
+                    resultHTML += `</ul></details>`;
+                }
+                resultHTML += `</div>`;
+                
+                resultEl.innerHTML = resultHTML;
+                resultEl.classList.remove('hidden');
+                
+                await saveDatasetMetadata(datasetName, validQuizzes.length);
+            } else {
+                progressFill.style.width = '100%';
+                statusEl.textContent = '❌ Nessun item valido trovato.';
+                
+                let resultHTML = `<div class="validation-result validation-invalid">`;
+                resultHTML += `<strong>❌ Errore di caricamento</strong>`;
+                resultHTML += `<p>Nessun item valido trovato nei file caricati.</p>`;
+                resultHTML += `<ul class="validation-list">`;
+                allErrors.forEach(err => {
+                    resultHTML += `<li>❌ ${err}</li>`;
+                });
+                resultHTML += `</ul></div>`;
+                
+                resultEl.innerHTML = resultHTML;
+                resultEl.classList.remove('hidden');
+            }
+            
+            await updateDashboardStats();
+            await populateDisciplineFilter();
+            await renderDatasetList();
+        }
+        
+        async function saveQuizzesToDB(quizzes, datasetName) {
+            const tx = db.transaction('quiz_data', 'readwrite');
+            for (const quiz of quizzes) {
+                quiz.dataset = datasetName;
+                quiz._imported_at = new Date().toISOString();
+                await tx.store.put(quiz);
+            }
+            await tx.done;
+        }
+        
+        async function saveDatasetMetadata(name, count) {
+            const existing = await db.get('datasets', name);
+            const meta = {
+                name,
+                count: (existing?.count || 0) + count,
+                last_updated: new Date().toISOString()
+            };
+            await db.put('datasets', meta);
+        }
+        
+        async function renderDatasetList() {
+            const container = document.getElementById('datasetList');
+            const datasets = await db.getAll('datasets');
+            const allQuizzes = await db.getAll('quiz_data');
+            
+            const quizCountByDataset = {};
+            allQuizzes.forEach(q => {
+                const ds = q.dataset || 'unknown';
+                quizCountByDataset[ds] = (quizCountByDataset[ds] || 0) + 1;
+            });
+            
+            if (datasets.length === 0 && Object.keys(quizCountByDataset).length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--spacing-lg);">Nessun dataset caricato. Carica il tuo primo file JSON per iniziare.</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            const datasetNames = [...new Set([
+                ...datasets.map(d => d.name),
+                ...Object.keys(quizCountByDataset)
+            ])];
+            
+            datasetNames.forEach(name => {
+                const count = quizCountByDataset[name] || 0;
+                const meta = datasets.find(d => d.name === name);
+                const lastUpdated = meta?.last_updated ? new Date(meta.last_updated).toLocaleString('it-IT') : 'Data sconosciuta';
+                
+                const div = document.createElement('div');
+                div.className = 'dataset-item';
+                div.innerHTML = `
+                    <div class="dataset-info">
+                        <div class="dataset-name">${name}</div>
+                        <div class="dataset-meta">${count} item · Aggiornato: ${lastUpdated}</div>
+                    </div>
+                    <div class="dataset-actions">
+                        <button class="btn btn-danger btn-small" onclick="deleteDataset('${name}')">🗑️ Elimina</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        window.deleteDataset = async function(name) {
+            if (!confirm(`Sei sicuro di voler eliminare il dataset "${name}"? Tutti i quiz associati verranno rimossi, ma i progressi saranno mantenuti.`)) return;
+            
+            const allQuizzes = await db.getAll('quiz_data');
+            const toDelete = allQuizzes.filter(q => q.dataset === name);
+            
+            const tx = db.transaction('quiz_data', 'readwrite');
+            for (const quiz of toDelete) {
+                await tx.store.delete(quiz.item_id);
+            }
+            await tx.done;
+            
+            await db.delete('datasets', name);
+            
+            await updateDashboardStats();
+            await populateDisciplineFilter();
+            await renderDatasetList();
+        };
+        
+        document.getElementById('clearAllDataBtn').addEventListener('click', () => {
+            document.getElementById('confirmClearModal').classList.remove('hidden');
+        });
+        
+        document.getElementById('cancelClearBtn').addEventListener('click', () => {
+            document.getElementById('confirmClearModal').classList.add('hidden');
+        });
+        
+        document.getElementById('confirmClearBtn').addEventListener('click', async () => {
+            const stores = ['quiz_data', 'user_attempts', 'item_stats', 'session_logs', 'datasets'];
+            const tx = db.transaction(stores, 'readwrite');
+            
+            for (const store of stores) {
+                await tx.objectStore(store).clear();
+            }
+            await tx.done;
+            
+            document.getElementById('confirmClearModal').classList.add('hidden');
+            await updateDashboardStats();
+            await populateDisciplineFilter();
+            await renderDatasetList();
+        });
+        
+        document.getElementById('loadSampleBtn').addEventListener('click', async () => {
+            const sampleQuizzes = [
+                {
+                    item_id: "CARDIO_001",
+                    disciplina: "Cardiologia",
+                    blooms_level: 2,
+                    item_type: "mcq",
+                    stem: "Quale delle seguenti valvulopatie è caratterizzata da un soffio sistolico a diamante audibile al secondo spazio intercostale destro?",
+                    options: [
+                        {label: "A", text: "Stenosi mitralica"},
+                        {label: "B", text: "Insufficienza aortica"},
+                        {label: "C", text: "Stenosi aortica"},
+                        {label: "D", text: "Insufficienza mitralica"},
+                        {label: "E", text: "Stenosi polmonare"}
+                    ],
+                    correct_answer: "C",
+                    distractor_rationale: {
+                        "A": "Il soffio della stenosi mitralica è diastolico, non sistolico",
+                        "B": "L'insufficienza aortica presenta un soffio diastolico decrescendo",
+                        "D": "L'insufficienza mitralica ha un soffio sistolico ma si ausculta all'apice",
+                        "E": "La stenosi polmonare è rara nell'adulto e si ausculta al II spazio sinistro"
+                    },
+                    rationale_breve: "La stenosi aortica produce un soffio sistolico a diamante (crescendo-decrescendo) con massima intensità al II spazio intercostale destro.",
+                    rationale_esteso: "La stenosi aortica è caratterizzata da un soffio sistolico di eiezione con pattern crescendo-decrescendo (a diamante). Il punto di massima intensità è il II spazio intercostale destro, con irradiazione ai vasi del collo. L'intensità del soffio correla con la gravità della stenosi solo quando è lieve-moderata; nella stenosi severa, la gittata ridotta può paradossalmente attenuare il soffio. >>Associazioni tipiche<<: sincope, angina, dispnea. ***Esame diagnostico di scelta: Ecocardiogramma.***",
+                    difficulty_est: 3,
+                    competency_afm: "Diagnosi differenziale soffi cardiaci",
+                    source_ref: "Harrison's Internal Medicine, 21ed",
+                    tags: ["cardiologia", "soffi", "valvulopatie", "diagnosi"]
+                },
+                {
+                    item_id: "NEURO_001",
+                    disciplina: "Neurologia",
+                    blooms_level: 1,
+                    item_type: "tf",
+                    stem: "La sclerosi multipla è una patologia demielinizzante del sistema nervoso centrale.",
+                    options: [
+                        {label: "A", text: "Vero"},
+                        {label: "B", text: "Falso"}
+                    ],
+                    correct_answer: "A",
+                    distractor_rationale: {
+                        "B": "La SM è per definizione una malattia demielinizzante del SNC"
+                    },
+                    rationale_breve: "Vero. La SM è una malattia autoimmune demielinizzante che colpisce il SNC.",
+                    rationale_esteso: "La Sclerosi Multipla è una malattia infiammatoria cronica demielinizzante del sistema nervoso centrale, mediata da meccanismi autoimmuni. >>Caratteristiche patologiche<<: placche demielinizzanti disseminate nel tempo e nello spazio. Colpisce tipicamente giovani adulti (20-40 anni), con predilezione femminile 2:1. ***Diagnosi***: RM encefalo/midollo, liquido cerebrospinale (bande oligoclonali).",
+                    difficulty_est: 1,
+                    competency_afm: "Definizione SM",
+                    source_ref: "Adams & Victor Neurology, 11ed",
+                    tags: ["neurologia", "sclerosi multipla", "definizione"]
+                },
+                {
+                    item_id: "PNEUMO_001",
+                    disciplina: "Pneumologia",
+                    blooms_level: 3,
+                    item_type: "mcq",
+                    stem: "Un paziente di 72 anni con BPCO in riacutizzazione presenta PaO2 45 mmHg, PaCO2 65 mmHg e pH 7.28. Qual è l'intervento più appropriato?",
+                    options: [
+                        {label: "A", text: "Ossigenoterapia ad alti flussi"},
+                        {label: "B", text: "NIV (Ventilazione non invasiva)"},
+                        {label: "C", text: "Intubazione immediata"},
+                        {label: "D", text: "Solo broncodilatatori"},
+                        {label: "E", text: "Antibiotici EV senza supporto ventilatorio"}
+                    ],
+                    correct_answer: "B",
+                    distractor_rationale: {
+                        "A": "L'O2 ad alti flussi peggiora l'ipercapnia nei BPCO",
+                        "C": "La NIV va tentata prima dell'intubazione se possibile",
+                        "D": "I broncodilatatori sono necessari ma insufficienti",
+                        "E": "L'insufficienza respiratoria richiede supporto ventilatorio"
+                    },
+                    rationale_breve: "La NIV è il trattamento di prima linea per l'ipercapnia acuta con acidosi respiratoria nella BPCO riacutizzata.",
+                    rationale_esteso: "Nella riacutizzazione di BPCO con insufficienza respiratoria ipercapnica (pH < 7.35, PaCO2 > 45 mmHg), la ventilazione non invasiva (NIV) è il trattamento di prima linea. >>Indicazioni NIV<<: pH < 7.35, PaCO2 > 45, dispnea moderata-severa, frequenza respiratoria > 24/min. ***Controindicazioni***: instabilità emodinamica, incapacità a proteggere le vie aeree, trauma facciale. Se NIV fallisce dopo 1-2h → intubazione.",
+                    difficulty_est: 4,
+                    competency_afm: "Gestione BPCO riacutizzata",
+                    source_ref: "GOLD Guidelines 2024",
+                    tags: ["pneumologia", "BPCO", "NIV", "emergenza"]
+                },
+                {
+                    item_id: "ENDOCRINO_001",
+                    disciplina: "Endocrinologia",
+                    blooms_level: 2,
+                    item_type: "mcq",
+                    stem: "Quale ormone è principale responsabile dell'abbassamento della glicemia?",
+                    options: [
+                        {label: "A", text: "Glucagone"},
+                        {label: "B", text: "Insulina"},
+                        {label: "C", text: "Cortisolo"},
+                        {label: "D", text: "Adrenalina"},
+                        {label: "E", text: "GH (Ormone della crescita)"}
+                    ],
+                    correct_answer: "B",
+                    distractor_rationale: {
+                        "A": "Il glucagone ha effetto iperglicemizzante",
+                        "C": "Il cortisolo aumenta la glicemia",
+                        "D": "L'adrenalina aumenta la glicemia",
+                        "E": "Il GH ha effetto controregolatore iperglicemizzante"
+                    },
+                    rationale_breve: "L'insulina è l'unico ormone ipoglicemizzante, secreto dalle cellule beta del pancreas.",
+                    rationale_esteso: "L'insulina è l'unico ormone fisiologico con azione ipoglicemizzante. Prodotta dalle cellule β delle isole di Langerhans, promuove l'ingresso del glucosio nelle cellule (specialmente muscolo e tessuto adiposo) e inibisce la gluconeogenesi epatica. >>Regolazione<<: stimolata da iperglicemia, aminoacidi, GLP-1. ***Inibita da***: ipoglicemia, noradrenalina, somatostatina. Nel diabete mellito, la carenza di insulina o la resistenza periferica portano a iperglicemia cronica.",
+                    difficulty_est: 2,
+                    competency_afm: "Regolazione glicemica",
+                    source_ref: "Williams Textbook of Endocrinology, 14ed",
+                    tags: ["endocrinologia", "insulina", "diabete", "fisiologia"]
+                }
+            ];
+            
+            await saveQuizzesToDB(sampleQuizzes, 'Dati_Esempio');
+            await saveDatasetMetadata('Dati_Esempio', sampleQuizzes.length);
+            await updateDashboardStats();
+            await populateDisciplineFilter();
+            await renderDatasetList();
+            
+            alert('✅ Dati di esempio caricati! Ora puoi iniziare una sessione.');
+            switchView('dashboard');
+        });
+        
+        async function init() {
+            await initDB();
+            await updateDashboardStats();
+            await populateDisciplineFilter();
+            await renderDatasetList();
+            updateTimerDisplay();
+        }
+        
+        init();
+    </script>
+</body>
+</html>
+
